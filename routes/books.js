@@ -1,8 +1,8 @@
 const express = require('express');
 var router = express.Router();
 const { check, validationResult } = require('express-validator');
+const Book = require('../models/book');
 
-// TODO: 
 var books = [
   {
     "isbn": "0425198685",
@@ -42,8 +42,11 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    console.log(req.body);
-    return res.status(200).send(req.body);
+    let book = new Book(req.body['isbn'], req.body['name'], req.body['author'], req.body['publication_date'], req.body['description']);
+    console.log (`Saving ISBN ${book.isbn}, please wait...`);
+    book.save()
+      .then(msg => res.status(200).send(msg))
+      .catch(err => res.status(500).send(err));
 });
 
 router.get('/all', (req, res) => {
