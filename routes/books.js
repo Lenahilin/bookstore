@@ -69,8 +69,22 @@ router.put('/update',
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    res.send(req.body);
+    var book = {
+      "isbn": "978-1-59780-158-4",
+      "name": "The Windup Girl",
+      "author": "Paolo Bacigalupi",
+      "publication_date": "2009-09-01",
+      "description": "...no description..."
+    };
+    for (const property in req.body) { //TODO: prevent creating new properties
+      if (req.body[property] !== book[property]) {
+        console.log(`updating ${property}`);
+        book[property] = req.body[property];
+      }
+    }
+    res.send(book); // TODO: return all book properties regardless of how many of them have been updated
 });
+
 
 
 module.exports = router;
