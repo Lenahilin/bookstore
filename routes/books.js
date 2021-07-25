@@ -2,6 +2,23 @@ const express = require('express');
 var router = express.Router();
 const { check, validationResult } = require('express-validator');
 
+// TODO: 
+var books = [
+  {
+    "isbn": "0425198685",
+    "name": "Pattern recognition",
+    "author": "William Gibson",
+    "publication_date": "2003-03-02",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam, turpis vel tincidunt tempus, massa nunc eleifend lorem, id viverra"
+  }, 
+  {
+    "isbn": "9780765312181",
+    "name": "Blindsight",
+    "author": "Peter Watts",
+    "publication_date": "2006-10-03",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nisl nibh, commodo tincidunt nisi eu, aliquet maximus elit. Aliquam porttitor orci quam. Duis urna ex."
+  }
+];
 
 router.post(
   '/add',
@@ -30,22 +47,10 @@ router.post(
 });
 
 router.get('/all', (req, res) => {
-  var books = [
-    {
-      "isbn": "0425198685",
-      "name": "Pattern recognition",
-      "author": "William Gibson",
-      "publication_date": "2003-03-02",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam, turpis vel tincidunt tempus, massa nunc eleifend lorem, id viverra"
-    }, 
-    {
-      "isbn": "9780765312181",
-      "name": "Blindsight",
-      "author": "Peter Watts",
-      "publication_date": "2006-10-03",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nisl nibh, commodo tincidunt nisi eu, aliquet maximus elit. Aliquam porttitor orci quam. Duis urna ex."
-    }];
-    return res.status(200).send(books);
+  if (books.length == 0) {
+    return res.status(200).send('There are no books yet. You can add them by using the /books/add endpoint.');
+  }
+  return res.status(200).send(books);
 });
 
 router.put('/update', 
@@ -82,9 +87,23 @@ router.put('/update',
         book[property] = req.body[property];
       }
     }
-    res.send(book); // TODO: return all book properties regardless of how many of them have been updated
+    res.send(book);
 });
 
+router.delete('/delete', 
+  check('isbn')
+  .isISBN()
+  .withMessage('Invalid ISBN'),
+  (req, res) => {
+    let index = books.findIndex(book => book['isbn'] === req.body['isbn']);
+    console.log(index);
+    if (index > -1) {
+      books.splice(index, 1);
+      res.status(204).send();
+    } else {
+      res.status(404).send('No such book');
+    }
+});
 
 
 module.exports = router;
