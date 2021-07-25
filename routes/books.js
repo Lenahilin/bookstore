@@ -11,7 +11,7 @@ router.post(
   check('name')
     .not().isEmpty()
     .withMessage('Empty book name'),
-  check('author')
+  check('author') // TODO: add regex validation   .isAlpha('en-US', {ignore: ' -.,'}),
     .not().isEmpty()
     .withMessage('Empty author'),
   check('publication_date')
@@ -46,6 +46,30 @@ router.get('/all', (req, res) => {
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nisl nibh, commodo tincidunt nisi eu, aliquet maximus elit. Aliquam porttitor orci quam. Duis urna ex."
     }];
     return res.status(200).send(books);
+});
+
+router.put('/update', 
+  check('isbn')
+  .isISBN()
+  .withMessage('Invalid ISBN'),
+  check('name') // can be undefined, but not null or an empty string
+  .if(check('name').exists()) 
+  .not().isEmpty(),
+  check('author')
+  .if(check('author').exists())
+  .isAlpha('en-US', {ignore: ' -.,'}),
+  check('publication_date')
+  .if(check('publication_date').exists())
+  .isDate({format: 'YYYY-MM-DD'}),
+  check('description') // can be undefined, but not null or an empty string
+  .if(check('description').exists())
+  .not().isEmpty(),
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    res.send(req.body);
 });
 
 
