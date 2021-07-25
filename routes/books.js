@@ -4,20 +4,9 @@ const { check, validationResult } = require('express-validator');
 const Book = require('../models/book');
 
 var books = [
-  {
-    "isbn": "0425198685",
-    "name": "Pattern recognition",
-    "author": "William Gibson",
-    "publication_date": "2003-03-02",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam, turpis vel tincidunt tempus, massa nunc eleifend lorem, id viverra"
-  }, 
-  {
-    "isbn": "9780765312181",
-    "name": "Blindsight",
-    "author": "Peter Watts",
-    "publication_date": "2006-10-03",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nisl nibh, commodo tincidunt nisi eu, aliquet maximus elit. Aliquam porttitor orci quam. Duis urna ex."
-  }
+  new Book("0425198685", "Pattern recognition", "William Gibson", "2003-03-02", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam, turpis vel tincidunt tempus, massa nunc eleifend lorem, id viverra"),
+  new Book("9780765312181", "Blindsight", "Peter Watts", "2006-10-03", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nisl nibh, commodo tincidunt nisi eu, aliquet maximus elit. Aliquam porttitor orci quam. Duis urna ex."),
+  new Book("978-1-59780-158-4", "The Windup Girl", "Paolo Bacigalupi", "2009-09-01", "...no description...")
 ];
 
 router.post(
@@ -56,6 +45,7 @@ router.get('/all', (req, res) => {
   return res.status(200).send(books);
 });
 
+/* NOTE: a book is not actually getting updated here, changes are not propagated to the test data array for the sake of simplicity */
 router.put('/update', 
   check('isbn')
   .isISBN()
@@ -77,20 +67,22 @@ router.put('/update',
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    var book = {
-      "isbn": "978-1-59780-158-4",
-      "name": "The Windup Girl",
-      "author": "Paolo Bacigalupi",
-      "publication_date": "2009-09-01",
-      "description": "...no description..."
+
+    let data = {
+      "isbn": req.body['isbn'],
+      "name": req.body['name'],
+      "author": req.body['author'],
+      "publication_date": req.body['publication_date'],
+      "description": req.body['description']
     };
-    for (const property in req.body) { //TODO: prevent creating new properties
-      if (req.body[property] !== book[property]) {
-        console.log(`updating ${property}`);
-        book[property] = req.body[property];
-      }
+    let book = books.find(b => b['isbn'] === data['isbn']);
+    if (book == undefined) {
+      return res.status(404).send('There is no book to update');
+    } else {
+        book.update(data)
+        .then(msg => res.status(200).send(msg)) //TODO: figure out what the response should look like (empty/generic message/the updated value etc.?)
+        .catch(err => res.status(500).send(err));
     }
-    res.send(book);
 });
 
 router.delete('/delete', 
@@ -99,7 +91,6 @@ router.delete('/delete',
   .withMessage('Invalid ISBN'),
   (req, res) => {
     let index = books.findIndex(book => book['isbn'] === req.body['isbn']);
-    console.log(index);
     if (index > -1) {
       books.splice(index, 1);
       res.status(204).send();
