@@ -10,10 +10,10 @@ $ npm run
 ### params
 | param | description | mandatory? |
 | ------|-------------| -----------|
-| **isbn** |    valid ISBN string | yes |
+| **isbn** |   a valid ISBN string | yes |
 | **name** |    any non-empty string | yes |
-| **author** | containing only letters (a-zA-Z) and any of the following chars: [ -.,]  | yes |
-| **publication_date** | date in the YYYY-MM-DD format | yes |
+| **author** | a string containing only letters (a-zA-Z) and any of the following chars: [ -.,]  | yes |
+| **publication_date** | a date in the YYYY-MM-DD format | yes |
 | **description** | any string | yes |
 
 ### response
@@ -36,10 +36,10 @@ None
 ### params
 | param | description | mandatory? |
 | ------|-------------| -----------|
-| **isbn** |    valid ISBN string | yes |
+| **isbn** |   a valid ISBN string | yes |
 | **name** |    any non-empty string | no |
-| **author** | containing only letters (a-zA-Z) and any of the following chars: [ -.,]  | no |
-| **publication_date** | date in the YYYY-MM-DD format | no |
+| **author** | any string containing only letters (a-zA-Z) and any of the following chars: [ -.,]  | no |
+| **publication_date** | a date in the YYYY-MM-DD format | no |
 | **description** | any string | no |
 
 ### response
@@ -51,7 +51,7 @@ None
 ### params
 | param | description | mandatory? |
 | ------|-------------| -----------|
-| **isbn** |    valid ISBN string | yes |
+| **isbn** |  a valid ISBN string | yes |
 
 ### response
 200 The book was deleted succesfully
