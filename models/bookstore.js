@@ -50,15 +50,23 @@ findBook = (isbn) => {
 };
 
 deleteBook = (isbn) => {
+  const delay = Math.floor(Math.random() * 1000);
   return new Promise((resolve, reject) => {
     const index = books.findIndex((book) => book["isbn"] === isbn);
     if (index == -1) {
       console.error(`Deleting ISBN ${isbn} failed: no such book`);
-      reject("No such book");
+      reject({ status: 404, msg: "No such book" });
     } else {
-      // books.splice(index, 1);
-      console.log(`Deleting ISBN ${isbn} succeeded`);
-      resolve(`ISBN ${isbn} deleted successfully`);
+      books.splice(index, 1);
+      if (Math.random() < 0.05) {
+        console.log(`Deleting ISBN ${isbn} failed`);
+        reject({ status: 500, msg: "Something went wrong" });
+      } else {
+        console.log(`Deleting ISBN ${isbn} succeeded`);
+        setTimeout(() => {
+          resolve(`ISBN ${isbn} deleted successfully`);
+        }, delay);
+      }
     }
   });
 };

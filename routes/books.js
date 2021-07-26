@@ -87,15 +87,18 @@ router.put(
 router.delete(
   "/delete",
   check("isbn").isISBN().withMessage("Invalid ISBN"),
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    deleteBook(req.body["isbn"])
-      .then((msg) => res.status(204).send(msg))
-      .catch((err) => res.status(404).send(err));
+    try {
+      const msg = await deleteBook(req.body["isbn"]);
+      res.status(204).send(msg);
+    } catch (err) {
+        res.status(err.status).send(err.msg);
+    }
   }
 );
 
