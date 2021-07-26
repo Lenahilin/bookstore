@@ -1,5 +1,11 @@
 # bookstore
 
+## Usage
+```
+$ npm install
+$ npm run
+```
+
 ## POST /books/add
 ### params
 | param | description | mandatory? |
