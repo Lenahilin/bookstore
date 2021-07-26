@@ -20,4 +20,29 @@ getAllBooks = () => {
   });
 }
 
-module.exports = {getAllBooks}
+findBook = (isbn) => {
+  return new Promise((resolve, reject) => {
+    let book = books.find(b => b['isbn'] === isbn);
+    if (book == undefined) {
+      reject('No such book');
+    } else {
+      resolve(book);
+    }
+  });
+}
+
+deleteBook = (isbn) => {
+  let index = books.findIndex(book => book['isbn'] === isbn);
+  return new Promise ( (resolve, reject) => {
+    if (index == -1) {
+      console.error(`Deleting ISBN ${req.body['isbn']} failed: no such book`);
+      reject('No such book');
+    } else {
+      books.splice(index, 1);
+      console.log(`Deleting ISBN ${req.body['isbn']} succeeded`);
+      resolve(`ISBN ${isbn} deleted successfully`);
+    }
+  });
+}
+
+module.exports = {getAllBooks, deleteBook, findBook};
