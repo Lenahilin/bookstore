@@ -10,7 +10,7 @@ getAllBooks = () => {
   var delay = Math.floor(Math.random() * 1000);
   return new Promise( (resolve, reject) => {
     if (Math.random() < 0.1) {
-      console.error('Getting books failed, please try again');
+      console.error('Getting books failed');
       reject('Getting books failed, please try again');
     } else {
       setTimeout(() => {
@@ -32,17 +32,17 @@ findBook = (isbn) => {
 }
 
 deleteBook = (isbn) => {
-  let index = books.findIndex(book => book['isbn'] === isbn);
   return new Promise ( (resolve, reject) => {
+    var index = books.findIndex(book => book['isbn'] === isbn);
     if (index == -1) {
-      console.error(`Deleting ISBN ${req.body['isbn']} failed: no such book`);
+      console.error(`Deleting ISBN ${isbn} failed: no such book`);
       reject('No such book');
     } else {
-      books.splice(index, 1);
-      console.log(`Deleting ISBN ${req.body['isbn']} succeeded`);
+      // books.splice(index, 1);
+      console.log(`Deleting ISBN ${isbn} succeeded`);
       resolve(`ISBN ${isbn} deleted successfully`);
     }
   });
 }
 
-module.exports = {getAllBooks, deleteBook, findBook};
+module.exports = {getAllBooks, findBook, deleteBook};

@@ -25,31 +25,23 @@ module.exports = class Book {
   }
 
   update(data) {
-    // for (const property in data) {
-    //   if (data[property] != undefined && this[property] !== data[property]) {
-    //     console.log(`updating ${property} of ISBN ${this.isbn}`);
-    //     this[property] = data[property];
-    //   }
-    // }
-    // return this;
-
     var delay = Math.floor(Math.random() * 1000);
-    return new Promise((resolve, reject) => {
-      if (Math.random() < 0.2) { // simulating a lower error rate here && rejecting immediately
-        reject('Updating the book failed, please try again');
-        console.error(`Updating ISBN ${this.isbn} failed`);
-      } else {
-          for (const property in data) {
-            if (data[property] != undefined && this[property] !== data[property]) {
-              console.log(`updating ${property} of ISBN ${this.isbn}`);
-              this[property] = data[property];
+      return new Promise((resolve, reject) => {
+        if (Math.random() < 0.2) { // simulating a lower error rate here && rejecting immediately
+          reject('Updating the book failed, please try again');
+          console.error(`Updating ISBN ${this.isbn} failed`);
+        } else {
+            for (const property in data) {
+              if (data[property] != undefined && this[property] !== data[property]) {
+                console.log(`updating ${property} of ISBN ${this.isbn}`);
+                // this[property] = data[property]; 
+              }
             }
+            setTimeout(() => {
+              resolve('The book was updated succesfully');
+              console.log(`Updating ISBN ${this.isbn} succeeded`);
+            }, delay);
           }
-          setTimeout(() => {
-            resolve('The book was updated succesfully');
-            console.log(`Updating ISBN ${this.isbn} succeeded`);
-          }, delay);
-        }
-    });
-  }
+      });
+    }
 };

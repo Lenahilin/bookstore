@@ -2,7 +2,7 @@ const express = require('express');
 var router = express.Router();
 const { check, validationResult } = require('express-validator');
 const Book = require('../models/book');
-const { getAllBooks, deleteBook, findBook } = require('../models/bookstore');
+const { getAllBooks, findBook, deleteBook } = require('../models/bookstore');
 
 
 router.post(
@@ -39,7 +39,6 @@ router.get('/all', (req, res) => {
   .catch(err => res.status(500).send(err));
 });
 
-/* NOTE: a book is not actually getting updated here, changes are not propagated to the test data array as per the task */
 router.put('/update', 
   check('isbn')
   .isISBN()
@@ -69,15 +68,6 @@ router.put('/update',
       "publication_date": req.body['publication_date'],
       "description": req.body['description']
     };
-    // let book = books.find(b => b['isbn'] === data['isbn']);
-    // if (book == undefined) {
-    //   return res.status(404).send('There is no book to update');
-    // } else {
-    //     book.update(data)
-    //     .then(msg => res.status(200).send(msg)) 
-    //     .catch(err => res.status(500).send(err));
-    // }
-
     findBook(data['isbn'])
     .then(book => book.update(data))
     .then(msg => res.status(200).send(msg)) //TODO: figure out what the response should look like (empty/generic message/the updated value etc.?)
@@ -85,7 +75,6 @@ router.put('/update',
 
 });
 
-/* In a real case both searching & deleting the book should be handled asynchronously */
 router.delete('/delete', 
   check('isbn')
   .isISBN()
