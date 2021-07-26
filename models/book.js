@@ -45,7 +45,6 @@ module.exports = class Book {
               this[property] = data[property];
             }
           }
-          console.log(this);
           setTimeout(() => {
             resolve('The book was updated succesfully');
             console.log(`Updating ISBN ${this.isbn} succeeded`);

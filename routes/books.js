@@ -2,12 +2,8 @@ const express = require('express');
 var router = express.Router();
 const { check, validationResult } = require('express-validator');
 const Book = require('../models/book');
+const { getAllBooks } = require('../models/bookstore');
 
-var books = [
-  new Book("0425198685", "Pattern recognition", "William Gibson", "2003-03-02", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam aliquam, turpis vel tincidunt tempus, massa nunc eleifend lorem, id viverra"),
-  new Book("9780765312181", "Blindsight", "Peter Watts", "2006-10-03", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nisl nibh, commodo tincidunt nisi eu, aliquet maximus elit. Aliquam porttitor orci quam. Duis urna ex."),
-  new Book("978-1-59780-158-4", "The Windup Girl", "Paolo Bacigalupi", "2009-09-01", "...no description...")
-];
 
 router.post(
   '/add',
@@ -39,10 +35,9 @@ router.post(
 });
 
 router.get('/all', (req, res) => {
-  if (books.length == 0) {
-    return res.status(200).send('There are no books yet. You can add them by using the /books/add endpoint.');
-  }
-  return res.status(200).send(books);
+  getAllBooks()
+  .then(books => books.length == 0 ? res.status(404).send('There are no books yet. You can add them by using the /books/add endpoint.') : res.status(200).send(books))
+  .catch(err => res.status(500).send(err));
 });
 
 /* NOTE: a book is not actually getting updated here, changes are not propagated to the test data array for the sake of simplicity */
@@ -85,19 +80,21 @@ router.put('/update',
     }
 });
 
+/* In a real case both searching & deleting the book should be handled asynchronously */
 router.delete('/delete', 
   check('isbn')
   .isISBN()
   .withMessage('Invalid ISBN'),
   (req, res) => {
     let index = books.findIndex(book => book['isbn'] === req.body['isbn']);
-    if (index > -1) {
-      books.splice(index, 1);
-      res.status(204).send();
-    } else {
+    if (index == -1) {
+      console.error(`Deleting ISBN ${req.body['isbn']} failed: no such book`)
       res.status(404).send('No such book');
+    } else {
+      books.splice(index, 1);
+      console.log(`Deleting ISBN ${req.body['isbn']} succeeded`);
+      res.status(204).send();
     }
 });
-
 
 module.exports = router;
