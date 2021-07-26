@@ -9,7 +9,9 @@
     "morgan": "^1.10.0",
     "supervisor": "^0.12.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "prettier": "2.3.2"
+  },
   "scripts": {
     "start": "supervisor app.js"
   },
