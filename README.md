@@ -26,9 +26,9 @@ $ docker run -p 3000:3000 bookstore
 
 ### response
 
-200 Saving succeeded
+200 Saving the book succeeded
 
-500 Saving failed
+500 Saving the book failed
 
 ## GET /books/all
 
@@ -60,6 +60,8 @@ None
 
 200 The book was updated succesfully
 
+404 No book to update
+
 500 Updating the book failed
 
 ## DELETE /books/delete
@@ -75,3 +77,6 @@ None
 200 The book was deleted succesfully
 
 404 No book to delete
+
+500 Deleting the book failed
+
