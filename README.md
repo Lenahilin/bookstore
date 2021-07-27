@@ -6,6 +6,11 @@
 $ npm install
 $ npm run
 ```
+or via Docker
+```
+$ docker build . -t bookstore
+$ docker run -p 3000:3000 bookstore
+```
 
 ## POST /books/add
 
