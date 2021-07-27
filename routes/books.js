@@ -14,22 +14,25 @@ router.post(
     .isDate({ format: "YYYY-MM-DD" })
     .withMessage("Publication date must be in the YYYY-MM-DD format"),
   check("description").not().isEmpty().withMessage("Empty description"),
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    let book = new Book(
+    const book = new Book(
       req.body["isbn"],
       req.body["name"],
       req.body["author"],
       req.body["publication_date"],
       req.body["description"]
     );
-    book
-      .save()
-      .then((msg) => res.status(200).send(msg))
-      .catch((err) => res.status(500).send(err));
+
+    try {
+      const msg = await book.save();
+      res.status(200).send(msg);
+    } catch (err) {
+        res.status(500).send(err);
+    }
   }
 );
 
@@ -68,7 +71,7 @@ router.put(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    let data = {
+    const data = {
       isbn: req.body["isbn"],
       name: req.body["name"],
       author: req.body["author"],
