@@ -28,7 +28,7 @@ module.exports = class Book {
     const delay = Math.floor(Math.random() * 1000);
     return new Promise((resolve, reject) => {
       if (Math.random() < 0.2) { // simulating a lower error rate here && rejecting immediately
-        reject("Updating the book failed, please try again");
+        reject({ status: 500, msg: "Updating the book failed, please try again" })
         console.error(`Updating ISBN ${this.isbn} failed`);
       } else {
         for (const property in data) {
@@ -36,7 +36,7 @@ module.exports = class Book {
             data[property] !== undefined &&
             this[property] !== data[property]
           ) {
-            console.log(`updating ${property} of ISBN ${this.isbn}`);
+            console.log(`Updating ${property} of ISBN ${this.isbn}`);
             // this[property] = data[property];
           }
         }

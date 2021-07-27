@@ -42,7 +42,7 @@ findBook = (isbn) => {
   return new Promise((resolve, reject) => {
     const book = books.find((b) => b["isbn"] === isbn);
     if (book === undefined) {
-      reject("No such book");
+      reject({ status: 404, msg: "No such book" });
     } else {
       resolve(book);
     }

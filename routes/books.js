@@ -66,7 +66,7 @@ router.put(
     .if(check("description").exists())
     .not()
     .isEmpty(),
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -79,10 +79,14 @@ router.put(
       publication_date: req.body["publication_date"],
       description: req.body["description"],
     };
-    findBook(data["isbn"])
-      .then((book) => book.update(data))
-      .then((msg) => res.status(200).send(msg)) //TODO: figure out what the response should look like (empty/generic message/the updated value etc.?)
-      .catch((err) => res.status(500).send(err));
+
+    try {
+      const book = await findBook(data["isbn"]);
+      const msg = await book.update(data);
+      res.status(200).send(msg);
+    } catch (err) {
+      res.status(err.status).send(err.msg);
+    }
   }
 );
 
