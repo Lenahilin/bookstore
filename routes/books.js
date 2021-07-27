@@ -8,8 +8,7 @@ router.post(
   "/add",
   check("isbn").isISBN().withMessage("Invalid ISBN"),
   check("name").not().isEmpty().withMessage("Empty book name"),
-  check("author")
-    .isAlpha("en-US", { ignore: " -.," }),
+  check("author").isAlpha("en-US", { ignore: " -.," }),
   check("publication_date")
     .isDate({ format: "YYYY-MM-DD" })
     .withMessage("Publication date must be in the YYYY-MM-DD format"),
@@ -31,7 +30,7 @@ router.post(
       const msg = await book.save();
       res.status(200).send(msg);
     } catch (err) {
-        res.status(500).send(err);
+      res.status(500).send(err);
     }
   }
 );
@@ -45,7 +44,7 @@ router.get("/all", async (req, res) => {
       res.status(200).send(books);
     }
   } catch (err) {
-      res.status(500).send(err)
+    res.status(500).send(err);
   }
 });
 
@@ -103,7 +102,7 @@ router.delete(
       const msg = await deleteBook(req.body["isbn"]);
       res.status(204).send(msg);
     } catch (err) {
-        res.status(err.status).send(err.msg);
+      res.status(err.status).send(err.msg);
     }
   }
 );

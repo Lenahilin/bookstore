@@ -6,7 +6,9 @@
 $ npm install
 $ npm run
 ```
+
 or via Docker
+
 ```
 $ docker build . -t bookstore
 $ docker run -p 3000:3000 bookstore
@@ -79,4 +81,3 @@ None
 404 No book to delete
 
 500 Deleting the book failed
-
