@@ -36,16 +36,17 @@ router.post(
   }
 );
 
-router.get("/all", (req, res) => {
-  getAllBooks()
-    .then((books) => {
-      if (books.length === 0) {
-        res.status(404).send("There are no books yet. You can add them by using the /books/add endpoint.");
-      } else {
-        res.status(200).send(books);
-      }
-    })
-    .catch((err) => res.status(500).send(err));
+router.get("/all", async (req, res) => {
+  try {
+    const books = await getAllBooks();
+    if (books.length === 0) {
+      res.status(404).send("There are no books yet. You can add them by using the /books/add endpoint.");
+    } else {
+      res.status(200).send(books);
+    }
+  } catch (err) {
+      res.status(500).send(err)
+  }
 });
 
 router.put(
